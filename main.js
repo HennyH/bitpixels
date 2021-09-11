@@ -169,7 +169,7 @@ function PixelGrid({ dimensions, palette, pixels, onDimensionsChanged, onPixelsC
 function App() {
     const [palette, setPalette] = useLocalStorage("palette", [DEFAULT_COLOR]);
     const [dimensions, setDimensions] = useLocalStorage("dimensions", { w: 5, h: 5 });
-    const [pixels, setPixels] = useLocalStorage("pixels", []);
+    const [pixels, setPixels] = useLocalStorage("pixels", {});
 
     return e("main", null,
         e(ColorPalette, { palette, onPaletteChanged: setPalette }),
