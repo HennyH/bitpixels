@@ -100,6 +100,8 @@ function PixelGrid({ dimensions, palette, pixels, onDimensionsChanged, onPixelsC
     }
 
     function handleDimensionsChagned(w, h) {
+        if (!isNaN(w) && w > 50) return;
+        if (!isNaN(h) && h > 50) return;
         w = isNaN(w) ? 0 : w;
         h = isNaN(h) ? 0 : h;
         onDimensionsChanged({
@@ -159,8 +161,8 @@ function PixelGrid({ dimensions, palette, pixels, onDimensionsChanged, onPixelsC
         e("h2", null, "Pixel Grid"),
         e("p", null, "The pixel grid is represented by two 8 bit numbers for the width and height of the grid, followed by an 8 bit number for each cell in left-to-right, top-to-bottom order."),
         e("form", null,
-            e("label", null, "Width:", e("input", {type: "number", min: 0, value: dimensions.w === 0 ? "" : dimensions.w, onChange: e => handleDimensionsChagned(parseInt(e.target.value), null) })),
-            e("label", null, "Height:", e("input", {type: "number", min: 0, value: dimensions.h === 0 ? "" : dimensions.h, onChange: e => handleDimensionsChagned(null, parseInt(e.target.value)) })),
+            e("label", null, "Width:", e("input", {type: "number", min: 0, max: 50, value: dimensions.w === 0 ? "" : dimensions.w, onChange: e => handleDimensionsChagned(parseInt(e.target.value), null) })),
+            e("label", null, "Height:", e("input", {type: "number", min: 0, max: 50, value: dimensions.h === 0 ? "" : dimensions.h, onChange: e => handleDimensionsChagned(null, parseInt(e.target.value)) })),
             e("button", {onClick: clearGrid}, "Clear Grid"),
             e("button", {onClick: resetGridSize, style: {marginLeft: '1em'}}, "Reset Grid Size")
         ),
