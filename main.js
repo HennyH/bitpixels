@@ -5,6 +5,7 @@ const useState = React.useState;
 const useLayoutEffect = React.useLayoutEffect;
 const useRef = React.useRef;
 const DEFAULT_COLOR = "#ffffff";
+const DEFAULT_GRID_SIZE = 5;
 
 const useLocalStorage = (key, fallback) => {
     const [value, setValue] = useState(() => {
@@ -141,13 +142,18 @@ function PixelGrid({ dimensions, palette, pixels, onDimensionsChanged, onPixelsC
         onPixelsChanged({});
     }
 
+    function resetGridSize() {
+        onDimensionsChanged({ w: DEFAULT_GRID_SIZE, h: DEFAULT_GRID_SIZE })
+    }
+
     return e("section", null,
         e("h2", null, "Pixel Grid"),
         e("p", null, "The pixel grid is represented by two 8 bit numbers for the width and height of the grid, followed by an 8 bit number for each cell in left-to-right, top-to-bottom order."),
         e("form", null,
             e("label", null, "Width:", e("input", {type: "number", min: 0, value: dimensions.w === 0 ? "" : dimensions.w, onChange: e => handleDimensionsChagned(parseInt(e.target.value), null) })),
             e("label", null, "Height:", e("input", {type: "number", min: 0, value: dimensions.h === 0 ? "" : dimensions.h, onChange: e => handleDimensionsChagned(null, parseInt(e.target.value)) })),
-            e("button", {onClick: clearGrid}, "Clear Grid")
+            e("button", {onClick: clearGrid}, "Clear Grid"),
+            e("button", {onClick: resetGridSize, style: {marginLeft: '1em'}}, "Reset Grid Size")
         ),
         e("table", null,
             e("tbody", null, new Array(dimensions.h).fill(null).map((_, j) =>
@@ -170,7 +176,7 @@ function PixelGrid({ dimensions, palette, pixels, onDimensionsChanged, onPixelsC
 
 function App() {
     const [palette, setPalette] = useLocalStorage("palette", [DEFAULT_COLOR]);
-    const [dimensions, setDimensions] = useLocalStorage("dimensions", { w: 5, h: 5 });
+    const [dimensions, setDimensions] = useLocalStorage("dimensions", { w: DEFAULT_GRID_SIZE, h: DEFAULT_GRID_SIZE });
     const [pixels, setPixels] = useLocalStorage("pixels", {});
 
     return e("main", null,
