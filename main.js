@@ -72,7 +72,7 @@ function ColorPalette({ palette, onPaletteChanged }) {
             ...palette.map((c, i) => e("li", {key: `${i}${c}`},
                 e("div", {className: "color-palette-item"},
                     e("input", {type: "color", defaultValue: c, 'data-index': i}),
-                    e("code", {className: "color-bin", style: {backgroundColor: c, border: "1px dashed black"}}, colorHexToBinary(c)),
+                    e("code", {className: "color-bin", style: {border: `4px solid ${c}`}}, colorHexToBinary(c)),
                     e("button", {onClick: () => removeColor(i)}, "Delete")
                 )
             )),
