@@ -87,7 +87,8 @@ function ColorPalette({ palette, onPaletteChanged }) {
 }
 
 function PixelGrid({ dimensions, palette, pixels, onDimensionsChanged, onPixelsChanged }) {
-    const [importGridBinary, setImportGridBinary] = useState('')
+    const [importGridBinary, setImportGridBinary] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const keyForPos = (x, y) => `${x}-${y}`;
     const valueForPos = (x, y) => parseInt(pixels[keyForPos(x, y)]);
@@ -127,6 +128,11 @@ function PixelGrid({ dimensions, palette, pixels, onDimensionsChanged, onPixelsC
     function importGrid() {
         const w = parseInt(importGridBinary.substring(0, 8), 2);
         const h = parseInt(importGridBinary.substring(8, 16), 2);
+        const nPixels = w * h;
+        if ((nPixels !== (importGridBinary.length - 16) / 8) || !importGridBinary.match(/^[01]+$/)) {
+            setErrorMessage("Error: Unexpected data format");
+            return;
+        }
         const pixels = {}
         for (let j = 0; j < h; j++) {
             for (let i = 0; i < w; i++) {
@@ -134,6 +140,7 @@ function PixelGrid({ dimensions, palette, pixels, onDimensionsChanged, onPixelsC
                 pixels[keyForPos(i, j)] = parseInt(importGridBinary.substring(binStart, binStart + 8), 2);
             }
         }
+        setErrorMessage('')
         onDimensionsChanged({ w, h });
         onPixelsChanged(pixels);
     }
@@ -143,7 +150,7 @@ function PixelGrid({ dimensions, palette, pixels, onDimensionsChanged, onPixelsC
     }
 
     function resetGridSize() {
-        onDimensionsChanged({ w: DEFAULT_GRID_SIZE, h: DEFAULT_GRID_SIZE })
+        onDimensionsChanged({ w: DEFAULT_GRID_SIZE, h: DEFAULT_GRID_SIZE });
     }
 
     return e("section", null,
@@ -167,8 +174,10 @@ function PixelGrid({ dimensions, palette, pixels, onDimensionsChanged, onPixelsC
         e("h3", null, "Export Pixel Grid"),
         e("span", {className: "binary"}, gridBinary),
         e("h3", null, "Import Pixel Grid"),
-        e("input", {type: "text", pattern: '[01]', value: importGridBinary, onChange: e => setImportGridBinary(e.target.value)}),
-        e("button", {onClick: importGrid, disabled: importGridBinary == null || importGridBinary == undefined || importGridBinary.length == 0}, "Import Grid")
+        e("input", {type: "text", pattern: '[01]+', value: importGridBinary, onChange: e => setImportGridBinary(e.target.value)}),
+        e("button", {onClick: importGrid, disabled: importGridBinary == null || importGridBinary == undefined || importGridBinary.length == 0}, "Import Grid"),
+        e("br"),
+        e("span", {style: {color: "red"}}, errorMessage)
     )
 }
 
