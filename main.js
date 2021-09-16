@@ -59,16 +59,18 @@ function ColorPalette({ palette, onPaletteChanged }) {
         setImportPaletteBinary('');
     }
 
+    const colorHexToBinary = c => parseInt(c.substring(1), 16).toString(2).padStart(24, "0");
     const paletteBinary = palette
-        .map(c => parseInt(c.substring(1), 16).toString(2).padStart(24, "0"))
+        .map(colorHexToBinary)
         .reduce((acc, s) => `${acc}${s}`, '')
 
     return e("section", null,
         e("h2", null, "Color Palette"),
         e("p", null, "Each color is represented as a hexcode of the form #rrggbb. Each color uses 24 bits to be represented in binary."),
         e("ol", {ref: olRef}, [
-            ...palette.map((c, i) => e("li", {key: `${i}${c}`},
+            ...palette.map((c, i) => e("li", {key: `${i}${c}`, className: "color-palette-item"},
                 e("input", {type: "color", defaultValue: c, 'data-index': i}),
+                e("code", {className: "color-bin", style: {backgroundColor: c, border: "1px dashed black"}}, colorHexToBinary(c)),
                 e("button", {onClick: () => removeColor(i)}, "Delete")
             )),
             e("li", {key: "new"},
